@@ -4,18 +4,18 @@ require_relative 'user'
 
 class Question
   def self.find_by_id(id)
-    user_data = QuestionsDatabase.get_first_row(<<-SQL, id: id)
+    results = QuestionsDatabase.instance.execute(<<-SQL, id: id)
       SELECT
-        users.*
+        *
       FROM
-        users
+        questions
       WHERE
-        users.id = :id
+        questions.id = :id
     SQL
 
-    user_data.nil? ? nil : User.new(user_data)
+    results.map { |datum| Question.new(datum) }
   end
-  
+
   def self.find_by_author_id(id)
     results = QuestionsDatabase.instance.execute(<<-SQL, id: id)
       SELECT
@@ -29,10 +29,20 @@ class Question
   end
 
   attr_reader :id
-  attr_accessor :title, :body, :author_id
+  attr_accessor :title, :body, :user_id
 
   def initialize(options)
-   @id, @title, @body, @author_id =
-     options.values_at('id', 'title', 'body', 'author_id')
+   @id = options['id']
+   @title = options['title']
+   @body = options['body']
+   @user_id = options['user_id']
+  end
+
+  def author
+    User.find_by_id(@user_id).first
+  end
+
+  def replies
+    Reply.find_by_question_id(@id)
   end
 end

@@ -1,9 +1,11 @@
+DROP TABLE IF EXISTS users;
 CREATE TABLE users(
   id INTEGER PRIMARY KEY,
   fname VARCHAR(255) NOT NULL,
   lname VARCHAR(255) NOT NULL
 );
 
+DROP TABLE IF EXISTS questions;
 CREATE TABLE questions(
   id INTEGER PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
@@ -13,6 +15,7 @@ CREATE TABLE questions(
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
+DROP TABLE IF EXISTS question_follows;
 CREATE TABLE question_follows(
   id INTEGER PRIMARY KEY,
   user_id INTEGER NOT NULL,
@@ -22,6 +25,7 @@ CREATE TABLE question_follows(
   FOREIGN KEY(question_id) REFERENCES questions(id)
 );
 
+DROP TABLE IF EXISTS replies;
 CREATE TABLE replies(
   id INTEGER PRIMARY KEY,
   question_id INTEGER NOT NULL,
@@ -34,6 +38,7 @@ CREATE TABLE replies(
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
+DROP TABLE IF EXISTS question_likes;
 CREATE TABLE question_likes(
   id INTEGER PRIMARY KEY,
   user_id INTEGER NOT NULL,
@@ -60,5 +65,5 @@ VALUES
 INSERT INTO
   replies (question_id, parent_reply, user_id, body)
 VALUES
-  ('1', NULL, 2, 'I will help you find it!'),
-  ('1', NULL, 3, 'Oh no!!!');
+  (1, NULL, 2, 'I will help you find it!'),
+  (1, NULL, 3, 'Oh no!!!');

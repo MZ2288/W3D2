@@ -2,10 +2,6 @@ require_relative 'question'
 require_relative 'questions_database'
 require_relative 'user'
 
-attr_reader :id
-attr_accessor :fname, :lname
-
-
 class Follow
 
   def self.find_by_id(id)

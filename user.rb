@@ -4,7 +4,7 @@ require_relative 'question_follow'
 
 class User
   def self.find_by_id(id)
-    user_data = QuestionsDatabase.get_first_row(<<-SQL, id: id)
+    results = QuestionsDatabase.instance.execute(<<-SQL, id: id)
       SELECT
         *
       FROM
@@ -13,13 +13,55 @@ class User
         users.id = :id
     SQL
 
-    user_data.nil? ? nil : User.new(user_data)
+    results.map { |datum| User.new(datum) }
+  end
+
+  def self.find_by_name(fname, lname)
+    results = QuestionsDatabase.instance.execute(<<-SQL, fname: fname, lname: lname)
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        users.fname = :fname AND users.lname = :lname
+    SQL
+
+    results.map { |datum| User.new(datum) }
   end
 
   attr_reader :id
   attr_accessor :fname, :lname
 
   def initialize(options = {})
-    @id, @fname, @lname = options.values_at('id', 'fname', 'lname')
+    @id = options['id']
+    @fname = options['fname']
+    @lname = options['lname']
+  end
+
+  def authored_questions
+    results = QuestionsDatabase.instance.execute(<<-SQL, @id)
+      SELECT
+        *
+      FROM
+        questions
+      WHERE
+        questions.user_id = @id
+
+    SQL
+
+    results.map { |datum| Question.new(datum) }
+  end
+
+  def authored_replies
+    # results = QuestionsDatabase.instance.execute(<<-SQL, @id)
+    #   SELECT
+    #     *
+    #   FROM
+    #     replies
+    #   WHERE
+    #     replies.user_id = @id
+    # SQL
+    Reply.find_by_user_id(@id)
+    # results.map { |datum| Reply.new(datum) }
   end
 end
