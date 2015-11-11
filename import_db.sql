@@ -67,3 +67,9 @@ INSERT INTO
 VALUES
   (1, NULL, 2, 'I will help you find it!'),
   (1, NULL, 3, 'Oh no!!!');
+
+INSERT INTO
+  question_follows(user_id, question_id)
+VALUES
+  (1, 2),
+  (2, 3);

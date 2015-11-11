@@ -53,15 +53,10 @@ class User
   end
 
   def authored_replies
-    # results = QuestionsDatabase.instance.execute(<<-SQL, @id)
-    #   SELECT
-    #     *
-    #   FROM
-    #     replies
-    #   WHERE
-    #     replies.user_id = @id
-    # SQL
     Reply.find_by_user_id(@id)
-    # results.map { |datum| Reply.new(datum) }
+  end
+
+  def followed_questions
+    Follow.followed_questions_for_user_id(@id)
   end
 end
